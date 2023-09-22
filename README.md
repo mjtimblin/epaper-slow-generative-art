@@ -24,12 +24,8 @@ Finally, pressing any of the four buttons on the e-paper HAT will toggle the dis
 Headlines are sourced from
 - CNN
 - BBC World
-- DutchNews
-- 9gag
 - The nottheonion subreddit
-- The gaming subreddit
 - The onion
-- Hackaday
 
 The sources are chosen to be a nice mix of actual news and random funny bits. They're combined with some random prefixes and suffixes to hopefully make the images interesting.
 
