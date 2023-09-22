@@ -1,3 +1,5 @@
-/OnnxStream/*
-/XNNPACK/*
-/arts/*
+/OnnxStream
+/XNNPACK
+/weights
+/generated
+/venv
