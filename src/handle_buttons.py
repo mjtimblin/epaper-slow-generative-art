@@ -53,3 +53,7 @@ def main():
         show_sd_image_next = True
 
     signal.pause()
+
+
+if __name__ == '__main__':
+    main()
