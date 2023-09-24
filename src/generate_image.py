@@ -177,6 +177,8 @@ def main():
     qrcode_image_with_caption_filepath = path.join(GENERATED_DIR, f'{timestamp}_qrcode_with_caption.png')
     latest_qrcode_image_with_caption_filepath = path.join(GENERATED_DIR, 'latest_qrcode_with_caption.png')
 
+    os.makedirs(GENERATED_DIR, exist_ok=True)
+
     blacklisted_titles = []
     if path.exists(prior_titles_filepath):
         with open(prior_titles_filepath, 'r') as f:
