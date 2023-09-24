@@ -1,15 +1,10 @@
-# Auto epaper art
-
-![](.github/images/readme.jpg)
-![](.github/images/readme2.jpg)
-
-More images in [.github/images/](.github/images/)
+# ePaper Slow Generative Art
 
 This is a self-contained image generation picture frame showing mostly on-topic news headlines and probably only tangentially related images.
 
 The project runs Stable Diffusion on a raspberry pi, showing a image about a semi-random headline every 5 hours. It's a self-contained image generation picture frame showing mostly on-topic news headlines and probably only tangentially related images.
 
-It could be a lot faster with less iteration, but I like images that are time-wise more "expensive". A new image every 5 hours means that there's a new image in the morning, around lunch, around dinner and during the evening.
+It could be a lot faster with less iterations, but I like images that are time-wise more "expensive". A new image every 5 hours means that there's a new image in the morning, around lunch, around dinner and during the evening.
 
 The generated images aren't saved, it's a physical piece and I like that you have to be there to see it. If you don't want this, remove the line indicated by the comment in [bin/run.sh](bin/run.sh).
 
@@ -17,15 +12,15 @@ It's fun to guess what the neural nets might have latched on to; Wednesday the d
 
 It's a nice way to interact with the news.
 
-Finally, pressing any of the four buttons on the e-paper HAT will toggle the display between the generated image and a QR code linking to the headline.
+Additionally, pressing any of the four buttons on the ePaper HAT will toggle the display between the generated image and a QR code linking to the headline source.
 
 ## Generation sources
 
 Headlines are sourced from
-- CNN
-- BBC World
-- The nottheonion subreddit
-- The onion
+- [CNN](https://www.cnn.com/)
+- [BBC World](https://www.bbc.com/news/world)
+- [The Onion](https://www.theonion.com/)
+- [r/nottheonion](https://www.reddit.com/r/nottheonion/)
 
 The sources are chosen to be a nice mix of actual news and random funny bits. They're combined with some random prefixes and suffixes to hopefully make the images interesting.
 
@@ -33,56 +28,46 @@ See `src/prompt_sources.py` for sources and how to add your own.
 
 ## Hardware
 
-- IKEA picture frame
-- Raspberry pi zero 2 w
-- Inky Impression 7.3" (7 colour ePaper/E Ink HAT) https://shop.pimoroni.com/products/inky-impression-7-3
+- Raspberry Pi Zero 2 W
+- Inky Impression 7.3" (7 colour ePaper/E Ink HAT)
+  - [PiShop.us product page](https://www.pishop.us/product/inky-impression-7-3-7-colour-epaper-e-ink-hat/)
+- Geekworm Raspberry Pi Zero 2 W Heatsink C296
+  - [Amazon product page](https://www.amazon.com/dp/B09QMBCXLB)
+- Amazon Basics 5" x 7" Rectangular Photo Picture Frame
+  - [Amazon product page](https://www.amazon.com/dp/B079LNFJQX)
 
 Keep the thermals in mind, the rpi zero is kept busy and pulls a couple of watts. It needs some (passive) airflow, don't put it into the enclosure without any additional cooling. I put it on the outside and that seems to be working fine.
 
 ## Installation
 
-### Clone this repo
+### OS Setup
 
-Clone the repo into ~/epaper-slow-generative-art, or update the location in the user cronjob if you don't.
+- Install Raspberry Pi OS Lite (**64 bit**)
+- Enable I2C and SPI using `sudo raspi-config`
+- Increase swap size to 1024
+  - `sudo dphys-swapfile swapoff`
+  - `sudo nano /etc/dphys-swapfile`
+    - Set `CONF_SWAPSIZE=1024`
+  - `sudo dphys-swapfile setup`
+  - `sudo dphys-swapfile swapon`
+- `sudo apt update && sudo apt upgrade -y`
+- `sudo apt install git`
 
-### Install stable diffusion that works with low amounts of RAM
+### Repository setup
 
-- Follow the OnxxStream installation instructions, OnxxStream will end up in `<this dir>/OnxxStream`, XNNPACK will end up in `<this dir>/XNNPACK`. https://github.com/vitoplantamura/OnnxStream **compile OnxxStream with `-DMAX_SPEED=ON`, or reduce steps from 28 to 10 in `run.sh`**
-- Put the weights from https://github.com/vitoplantamura/OnnxStream/releases in `<this dir>/weights`
-- Using a virtualenv is recommended. To do this, run
-  - `pip install virtualenv`
-  - `virtualenv venv`
-  - `source venv/bin/activate`
-- Install required python packages with `pip install -r requirements.txt`
-
-### Increase swap
-
-- `sudo dphys-swapfile swapoff`
-- `sudo vim /etc/dphys-swapfile`, set `CONF_SWAPSIZE=1024`
-- Re-init swap with `sudo dphys-swapfile setup`
-- Turn the swap on again with `sudo dphys-swapfile swapon`
-
-### Install root cronjob
-
-```
-55 5 * * * reboot
-```
-
-### Install user cronjobs
-```
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
-
-@reboot cd epaper-slow-generative-art && ./bin/handle_button_presses.sh >> /tmp/buttons.log 2>&1
-0 6,11,16,21 * * * cd epaper-slow-generative-art && /usr/bin/flock -w 0 ./bin/run.sh ./bin/run.sh >> /tmp/generate.log 2>&1
-```
-
-## Results
-
-[![](.github/images/result-1-thumb.jpg)](.github/images/result-1.jpg)
-[![](.github/images/result-2-thumb.jpg)](.github/images/result-2.jpg)
-[![](.github/images/result-3-thumb.jpg)](.github/images/result-3.jpg)
-[![](.github/images/result-4-thumb.jpg)](.github/images/result-4.jpg)
-[![](.github/images/result-5-thumb.jpg)](.github/images/result-5.jpg)
-[![](.github/images/result-6-thumb.jpg)](.github/images/result-6.jpg)
-[![](.github/images/result-7-thumb.jpg)](.github/images/result-7.jpg)
-[![](.github/images/result-8-thumb.jpg)](.github/images/result-8.jpg)
+- `cd ~`
+- `git clone https://github.com/mjtimblin/epaper-slow-generative-art.git`
+- `cd epaper-slow-generative-art`
+- `sudo chmod +x bin/*`
+- `./bin/install_dependencies.sh`
+  - This will take a very long time (probably over an hour)
+- `sudo crontab -e`
+  - Add the following line
+    - `55 5 * * * reboot`
+- `crontab -e`
+  - Add the following lines
+    - `@reboot cd epaper-slow-generative-art && ./bin/handle_button_presses.sh >> /tmp/buttons.log 2>&1`
+    - `0 6,11,16,21 * * * cd epaper-slow-generative-art && /usr/bin/flock -w 0 ./bin/run.sh ./bin/run.sh >> /tmp/generate.log 2>&1`
+- (optional) `nano src/generate_image.py`
+  - Update `NUM_SD_STEPS` with a different value to change the number of steps used during Stable Diffusion image generation
+- `sudo reboot`
