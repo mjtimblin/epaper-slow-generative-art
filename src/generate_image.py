@@ -24,6 +24,7 @@ MAX_IMAGE_HEIGHT = 512
 PADDING = 10
 TEXT_WIDTH = 460
 
+NUM_SD_STEPS = 20
 MAX_ARTICLE_HISTORY = 100
 
 IS_RPI = path.isfile('/sys/firmware/devicetree/base/model')
@@ -34,7 +35,7 @@ def generate_sd_image(prompt, image_filepath) -> None:
 
     cmd = (f'{SD_PATH} \
        --models-path "{WEIGHTS_DIR}" \
-       --steps 28 \
+       --steps {str(NUM_SD_STEPS)} \
        {"--rpi" if IS_RPI else ""} \
        --neg-prompt "{negative_prompt}" \
        --prompt "{prompt.prefix + prompt.title + prompt.suffix}" \
