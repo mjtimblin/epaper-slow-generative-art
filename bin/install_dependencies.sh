@@ -4,7 +4,7 @@ set -e
 
 REPO_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." >/dev/null 2>&1 && pwd )"
 
-sudo apt-get install -y cmake unrar
+sudo apt-get install -y cmake python3 python3-pip
 
 if [ ! -d "$REPO_ROOT/XNNPACK" ]; then
   cd "$REPO_ROOT"
@@ -36,4 +36,13 @@ if [ $num_files_in_weights_dir -eq 0 ]; then
   wget -O weights.zip "https://github.com/mjtimblin/epaper-slow-generative-art/releases/download/v0.1/weights.zip"
   unzip weights.zip
   rm -rf weights.zip
+fi
+
+# Install pip dependencies to virtualenv
+if [ ! -d "$REPO_ROOT/venv" ]; then
+  cd "$REPO_ROOT"
+  python -m pip install virtualenv
+  python -m virtualenv venv
+  source venv/bin/activate
+  python -m pip install -r requirements.txt
 fi
