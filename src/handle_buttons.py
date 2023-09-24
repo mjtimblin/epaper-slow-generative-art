@@ -17,7 +17,10 @@ show_sd_image_next = True
 
 def display_image(image_filepath):
     inky = Inky()
-    inky.set_image(Image.open(image_filepath))
+    img = Image.open(image_filepath)
+    img = img.rotate(90, Image.NEAREST, expand=True)
+    resized_img = img.resize(inky.resolution)
+    inky.set_image(resized_img)
     inky.show()
 
 

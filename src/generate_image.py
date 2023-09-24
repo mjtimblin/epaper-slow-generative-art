@@ -213,7 +213,10 @@ def main():
     if IS_RPI:
         from inky import Inky_Impressions_7 as Inky
         inky = Inky()
-        inky.set_image(Image.open(latest_sd_image_with_caption_filepath))
+        img = Image.open(latest_sd_image_with_caption_filepath)
+        img = img.rotate(90, Image.NEAREST, expand=True)
+        resized_img = img.resize(inky.resolution)
+        inky.set_image(resized_img)
         inky.show()
 
 
