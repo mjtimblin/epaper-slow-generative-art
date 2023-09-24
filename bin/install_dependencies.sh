@@ -21,18 +21,17 @@ fi
 if [ ! -d "$REPO_ROOT/OnnxStream" ]; then
   cd "$REPO_ROOT"
   git clone https://github.com/vitoplantamura/OnnxStream.git
-  cd OnnxStream
-  cd src
+  cd OnnxStream/src
   mkdir build
   cd build
   cmake -DMAX_SPEED=ON -DXNNPACK_DIR="$REPO_ROOT/XNNPACK" ..
   cmake --build . --config Release
 fi
 
-# Download weights if they are not already present (.gitignore won't be represented in the count since it's a hidden file)
-num_files_in_weights_dir=$(ls -1q "$REPO_ROOT/weights" | wc -l)
-if [ $num_files_in_weights_dir -eq 0 ]; then
-  cd "$REPO_ROOT/weights"
+if [ ! -d "$REPO_ROOT/weights" ]; then
+  cd "$REPO_ROOT"
+  mkdir weights
+  cd weights
   wget -O weights.zip "https://github.com/mjtimblin/epaper-slow-generative-art/releases/download/v0.1/weights.zip"
   unzip weights.zip
   rm -rf weights.zip
