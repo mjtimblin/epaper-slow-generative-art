@@ -33,8 +33,7 @@ fi
 num_files_in_weights_dir=$(ls -1q "$REPO_ROOT/weights" | wc -l)
 if [ $num_files_in_weights_dir -eq 0 ]; then
   cd "$REPO_ROOT/weights"
-  wget -O weights.rar "https://github.com/vitoplantamura/OnnxStream/releases/download/v0.1/StableDiffusion-OnnxStream-Windows-x64-with-weights.rar"
-  unrar x weights.rar
-  mv SD/* .
-  rm -rf SD weights.rar sd.exe
+  wget -O weights.zip "https://github.com/mjtimblin/epaper-slow-generative-art/releases/download/v0.1/weights.zip"
+  unzip weights.zip
+  rm -rf weights.zip
 fi
